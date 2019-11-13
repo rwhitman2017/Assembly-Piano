@@ -3,8 +3,8 @@
 .STACK 100H
 
 ;IO Speaker - Programmable interval timer (PIT) Ports
-PIT_TIMERCOUNT equ 42h ;Use PIT_TIMERCOUNT for port name instead of 42h.
-PIT_TIMERCONTOL equ 43h ;Use PIT_TIMERCONTROL for port name instead of 43h.
+PIT_TIMER_COUNT equ 42h ;Use PIT_TIMER_COUNT for port name instead of 42h.
+PIT_TIMER_CONRTOL equ 43h ;Use PIT_TIMER_CONTROL for port name instead of 43h.
 SYSTEM_CONTROL_PORT_B equ 61h ;Use SYSTEM_CONTROL_PORT_B for port name instead of 61h
 
 ;1. Program the PIT to use timer 2 as a square wave generator. Write byte
@@ -22,24 +22,24 @@ SYSTEM_CONTROL_PORT_B equ 61h ;Use SYSTEM_CONTROL_PORT_B for port name instead o
 SOUND   PROC 
     
   ;DI Register takes in the square wave Frequency in hertz(HZ)
-  PUSH BX ;BX register is pushed, used to delay between notesaa
+  PUSH BX ;BX register is pushed, used to delay between notes
   MOV AL, 0B6H ;Sets port 42h to channel 2 and issues square wave pulses for sound
-  OUT 43H, AL  ;command register port
+  OUT PIT_TIMER_CONRTOL, AL  ;command register port
   MOV DX, 14h ;frequency fundamental = Bb. 13h=A
   DIV DI
-  OUT 42H, AL ;saves lower byte of frequency to computer speaker port
+  OUT PIT_TIMER_COUNT, AL ;saves lower byte of frequency to PIT Timer 2 Count port
   MOV AL, AH
-  OUT 42H, AL ;saves higher byte of frequency to computer speaker port
-  IN  AL, 61H ;Reads port mode
+  OUT PIT_TIMER_COUNT, AL ;saves higher byte of frequency to computer speaker port
+  IN  AL, SYSTEM_CONTROL_PORT_B ;Reads port mode from system control port
   MOV AH, AL
   OR  AL, 3 ;set 2 least sig bits - turns on the speaker!
-  OUT 61H, AL ;bits are good now
+  OUT SYSTEM_CONTROL_PORT_B, AL ;bits are done being set now
 L1: MOV CX, 10000 ;Amount to Delay loop counter
 L2: LOOP    L2   
   DEC BX ;Used to delay between notes
   JNZ L1
   MOV AL, AH
-  OUT 61H, AL 
+  OUT SYSTEM_CONTROL_PORT_B, AL 
   POP BX ;Restore original value of BX
   RET
 SOUND   ENDP
@@ -49,27 +49,27 @@ KEYBOARDPIANO: MOV AH, 0
   INT 16H   ;read char
   CMP AL, 'x'
   JE  EXIT
-  CMP AL, 'q'
+  CMP AL, 'q' ; fundamental frequency (tonic)
   JE  Bb 
-  CMP AL, 'w'
+  CMP AL, 'w' ; 9:8hz relationship to fundamental (supertonic, major second)
   JE  C
-  CMP AL, 'e'
+  CMP AL, 'e' ; 5:4hz relationship to fundamental (mediant, major third)
   JE  D
-  CMP AL, 'r'
+  CMP AL, 'r' ; 4:3hz relationship to fundamental (subdominant, perfect fourth) 
   JE  Eb
-  CMP AL, 't'
+  CMP AL, 't' ; 3:2hz relationship to fundamental (dominant, perfect fifth)
   JE  F
-  CMP AL, 'y'
+  CMP AL, 'y' ; 5:3hz relationship to fundamental (submediant, major sixth)
   JE  G                         
-  CMP AL, 'u'                            
+  CMP AL, 'u' ; 15:8hz relationship to fundamental (leading tone, major seventh)                          
   JE  A 
-  CMP AL, 'Q'
+  CMP AL, 'Q' ; Fundmental frequency, one octave higher
   JE  Bb2 
-  CMP AL, 'W'
+  CMP AL, 'W' ; Supertonic, one octave higher
   JE  C2 
-  CMP AL, 'E'
+  CMP AL, 'E' ; Mediant, one octave higher
   JE  D2                    
-  CMP AL, 'm'
+  CMP AL, 'm' ; m for music -> jumps to shrek song.
   JE  SHREK ; m->Shrek
   JNZ KEYBOARDPIANO
 Bb: MOV DI, 131
@@ -411,8 +411,8 @@ END MAIN
 ; e = 182 major third 5/4 ratio
 ; f = 195 perfect fourth 4/3 ratio
 ; g = 219 perfect fifth 3/2 ratio
-; a = 243 perfect sixth 5/3 ratio 
-; b = 274 perfect seventh 15/8 ratio
+; a = 243 major sixth 5/3 ratio 
+; b = 274 major seventh 15/8 ratio
 ; c2nd octave = 292 - 2/1 ratio
 
 
