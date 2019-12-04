@@ -2,10 +2,35 @@
 
 .STACK 100H
 
+;--------------MUSICAL KEYBOARD-----------
+;-----------------------------------------
+;-------------TO USE THE PROGRAM----------
+;------------q-w-e-r-t-y-u-Q-W-E---------- LOWER CASE qwertyu and SHIFT+Q,W,E FOR NOTES
+;-----------PRESS M FOR SHREK MODE--------
+;--------------PRESS X TO EXIT------------
+;-----------------------------------------
+
+;TO RUN THE PROGRAM
+;1. Download DOSBOX 16 bit emulator
+;2. Download Turbo Assembler (TASM)
+;3. Mount your C:/TASM folder using MOUNT command and include the asm file in the folder
+;3.5 mount c c://tasm (DONE INSIDE OF DOSBOX STEP 3 THROUGH 6)
+;4. Use TASM to assemble the .asm file via "tasm m.asm" as long as m.asm is in the same directory as TASM and TLINK
+;5. run "tlink m.obj" to link the file
+;6. run "m.exe"
+
 ;IO Speaker - Programmable interval timer (PIT) Ports
 PIT_TIMER_COUNT equ 42h ;Use PIT_TIMER_COUNT for port name instead of 42h.
 PIT_TIMER_CONRTOL equ 43h ;Use PIT_TIMER_CONTROL for port name instead of 43h.
 SYSTEM_CONTROL_PORT_B equ 61h ;Use SYSTEM_CONTROL_PORT_B for port name instead of 61h
+;Cnote equ 146 ;146 frequency is note C
+;Dnote equ 164 ;164 = D
+;Enote equ 182 ;182 = E
+;Fnote equ 195 ;195 = F
+;Gnote equ 219 ;219 = G
+;Anote equ 243 ;243 = A
+;Bnote equ 274 ;274 = B
+;Cnote equ 292 ;292 = C
 
 ;1. Program the PIT to use timer 2 as a square wave generator. Write byte
 ;10110110b to the PIT Control Port.
@@ -69,12 +94,12 @@ KEYBOARDPIANO: MOV AH, 0
   JE  C2 
   CMP AL, 'E' ; Mediant, one octave higher
   JE  D2                    
-  CMP AL, 'm' ; m for music -> jumps to shrek song.
-  JE  SHREK ; m->Shrek
+  CMP AL, 'm' ; m for music -> jumps to final countdown song.
+  JE  FINALCOUNTDOWN ; m->Final Countdown Song
   JNZ KEYBOARDPIANO
-Bb: MOV DI, 131
-  CALL    SOUND
-  JMP KEYBOARDPIANO
+Bb: MOV DI, 131 ; mov 131 frequency onto the DI register
+  CALL    SOUND ; call the sound function which takes in frequency and outputs note
+  JMP KEYBOARDPIANO ; jump to beginning of function to allow new note
 C: MOV DI, 147
   CALL    SOUND
   JMP KEYBOARDPIANO
@@ -109,309 +134,1502 @@ EXIT:   MOV AH, 00H
   INT 21H
   RET
    
-SHREK:  
+FINALCOUNTDOWN:  
 
-  MOV DI, 146   ;c quarter     
-  CALL    SOUND
-  MOV DI, 146   
-  CALL    SOUND
-  MOV DI, 146  
-  CALL    SOUND
-  MOV DI, 146   
-  
-  CALL    SOUND
-  MOV DI, 219   ;g 8th
-  CALL    SOUND
-  MOV DI, 219  
-  
-  CALL    SOUND
-  MOV DI, 182   ;e 8th
-  CALL    SOUND
-  MOV DI, 91   
-  
-  CALL    SOUND
-  MOV DI, 182   ;e quarter
-  CALL    SOUND
-  MOV DI, 182   
-  CALL    SOUND
-  MOV DI, 182   
-  CALL    SOUND
-  MOV DI, 182   
-  
-  CALL    SOUND
-  MOV DI, 164   ;d 8th
-  CALL    SOUND
-  MOV DI, 164   
-  
-  
-  CALL    SOUND  
-  MOV DI, 146   ;c 8th
-  CALL    SOUND 
-  MOV DI, 73   
-  
-  CALL    SOUND ;c 8th
-  MOV DI, 146
-  CALL    SOUND
-  MOV DI, 146  
-  
-  CALL    SOUND 
-  MOV DI, 195   ;f quarter
-  CALL    SOUND  
-  MOV DI, 195
-  CALL    SOUND
-  MOV DI, 195
-  CALL    SOUND 
-  MOV DI, 195
-  CALL    SOUND
-  
-  MOV DI, 182   ;e 8th
-  CALL    SOUND
-  MOV DI, 91    
-  
-  CALL    SOUND ;e 8th
-  MOV DI, 182   
-  CALL    SOUND
-  MOV DI, 182
-  CALL    SOUND  
-  
-  MOV DI, 164   ;d 8th
-  CALL    SOUND
-  MOV DI, 82
-  CALL    SOUND  
-  
-  MOV DI, 164   ;d 8th
-  CALL    SOUND
-  MOV DI, 164
-  CALL    SOUND    
-  
-  MOV DI, 146  ;c 8th
-  CALL    SOUND 
-  MOV DI, 145
-  CALL    SOUND   
-  MOV DI, 146
-  CALL    SOUND
-  MOV DI, 73
-  CALL    SOUND    
-  
-  MOV DI, 146
-  CALL    SOUND
-  MOV DI, 146  ;c 8th  
-  
-  CALL    SOUND 
-  MOV DI, 219   ;g 8th
+  MOV DI, 243       
   CALL    SOUND
   MOV DI, 219   
+  CALL    SOUND
+  MOV DI, 243  
+  CALL    SOUND
+  MOV DI, 243   
+  CALL    SOUND
+  MOV DI, 243   
+  CALL    SOUND
+  MOV DI, 243    
+  CALL    SOUND
+  MOV DI, 164   
+  CALL    SOUND
+  MOV DI, 164     
+  CALL    SOUND
+  MOV DI, 164   
+  CALL    SOUND
+  MOV DI, 164   
   CALL    SOUND 
-  MOV DI, 219   ;g 8th
-  CALL    SOUND
-  MOV DI, 219 
-    
+  ;END OF FIRST MEASURE
   
-  MOV DI, 182   ;e quarter
+  MOV DI, 82   
   CALL    SOUND
-  MOV DI, 91
+  MOV DI, 82   
   CALL    SOUND
-  MOV DI, 182
+  MOV DI, 82  
   CALL    SOUND
-  MOV DI, 182
+  MOV DI, 82   
+  CALL    SOUND  
+  MOV DI, 82  
+  CALL    SOUND 
+  MOV DI, 82   
+  CALL    SOUND
+  MOV DI, 260
+  CALL    SOUND
+  MOV DI, 243  
+  CALL    SOUND 
+  MOV DI, 260   
+  CALL    SOUND  
+  MOV DI, 260
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND 
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 219   
+  CALL    SOUND
+  MOV DI, 219    
+  CALL    SOUND 
+  MOV DI, 219   
+  CALL    SOUND
+  MOV DI, 219
+  CALL    SOUND  
+  ;END OF SECOND MEASURE
+  
+  MOV DI, 65  
+  CALL    SOUND
+  MOV DI, 65
+  CALL    SOUND   
+  MOV DI, 65  
+  CALL    SOUND
+  MOV DI, 65
+  CALL    SOUND    
+  MOV DI, 65  
+  CALL    SOUND 
+  MOV DI, 65
+  CALL    SOUND   
+  MOV DI, 260
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND    
+  MOV DI, 260
+  CALL    SOUND
+  MOV DI, 260    
+  CALL    SOUND 
+  MOV DI, 260   
+  CALL    SOUND
+  MOV DI, 260   
+  CALL    SOUND 
+  MOV DI, 164   
+  CALL    SOUND
+  MOV DI, 164  
+  CALL    SOUND    
+  MOV DI, 164  
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND 
+  ;END OF THIRD MEASURE
+  
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND    
+  MOV DI, 146   
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND 
+  MOV DI, 219   
+  CALL    SOUND 
+  MOV DI, 195
+  CALL    SOUND   
+  MOV DI, 219
+  CALL    SOUND
+  MOV DI, 219  
+  CALL    SOUND   
+  MOV DI, 195   
+  CALL    SOUND 
+  MOV DI, 195 
+  CALL    SOUND   
+  MOV DI, 189
+  CALL    SOUND
+  MOV DI, 189  
   CALL    SOUND  
   
-  MOV DI, 164   ;d quarter
+  MOV DI, 219   
+  CALL    SOUND 
+  MOV DI, 219
+  CALL    SOUND 
+  ;END OF MEASURE 4
+  
+    
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 195  
+  CALL    SOUND 
+  MOV DI, 195   
+  CALL    SOUND 
+  MOV DI, 195
+  CALL    SOUND   
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 195  
+  CALL    SOUND       
+  MOV DI, 243   
+  CALL    SOUND
+  MOV DI, 219   
+  CALL    SOUND
+  MOV DI, 243  
+  CALL    SOUND
+  MOV DI, 243     
+  CALL    SOUND
+  MOV DI, 243   
+  CALL    SOUND
+  MOV DI, 243    
+  CALL    SOUND
+  MOV DI, 164   
+  CALL    SOUND
+  MOV DI, 164     
+  CALL    SOUND
+  MOV DI, 164   
+  CALL    SOUND
+  MOV DI, 164   
+  CALL    SOUND
+  ;END OF FIFTH MEASURE     
+    
+  MOV DI, 82   
+  CALL    SOUND
+  MOV DI, 82   
+  CALL    SOUND
+  MOV DI, 82  
+  CALL    SOUND
+  MOV DI, 82   
+  CALL    SOUND  
+  MOV DI, 82  
+  CALL    SOUND 
+  MOV DI, 82   
+  CALL    SOUND
+  MOV DI, 260
+  CALL    SOUND
+  MOV DI, 243  
+  CALL    SOUND 
+  MOV DI, 260   
+  CALL    SOUND  
+  MOV DI, 260
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND 
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 219  
+  CALL    SOUND
+  MOV DI, 219    
+  CALL    SOUND 
+  MOV DI, 219   
+  CALL    SOUND
+  MOV DI, 219
+  CALL    SOUND  
+  ;END OF SIXTH MEASURE
+  
+  MOV DI, 65  
+  CALL    SOUND
+  MOV DI, 65
+  CALL    SOUND   
+  MOV DI, 65   
+  CALL    SOUND
+  MOV DI, 65
+  CALL    SOUND    
+  MOV DI, 65 
+  CALL    SOUND 
+  MOV DI, 65
+  CALL    SOUND   
+  MOV DI, 260
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND    
+  MOV DI, 260
+  CALL    SOUND
+  MOV DI, 260     
+  CALL    SOUND 
+  MOV DI, 260  
+  CALL    SOUND
+  MOV DI, 260   
+  CALL    SOUND 
+  MOV DI, 164   
+  CALL    SOUND
+  MOV DI, 164  
+  CALL    SOUND    
+  MOV DI, 164   
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND    
+  ;END OF SEVENTH MEASURE
+  
+  
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND    
+  MOV DI, 146  
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND 
+  
+  MOV DI, 219   
+  CALL    SOUND 
+  MOV DI, 195
+  CALL    SOUND   
+  MOV DI, 219
+  CALL    SOUND
+  MOV DI, 219  
+  CALL    SOUND 
+  
+  MOV DI, 195   
+  CALL    SOUND 
+  MOV DI, 195 
+  CALL    SOUND   
+  MOV DI, 189
+  CALL    SOUND
+  MOV DI, 189  
+  CALL    SOUND  
+  
+  MOV DI, 219   
+  CALL    SOUND 
+  MOV DI, 219
+  CALL    SOUND 
+  ;END OF 8TH MEASURE  
+  
+  MOV DI, 195
+  CALL    SOUND  
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 189 
+  CALL    SOUND
+  MOV DI, 195  
+  CALL    SOUND
+  MOV DI, 219    
+  CALL    SOUND
+  MOV DI, 219  
+  CALL    SOUND
+  MOV DI, 219   
+  
+  CALL    SOUND  
+  MOV DI, 219  
+  CALL    SOUND 
+  MOV DI, 219   
+  CALL    SOUND  
+  MOV DI, 219   
+  CALL    SOUND 
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 219
+  CALL    SOUND
+  ;END OF NINTH MEASURE
+  
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 219
+  CALL    SOUND
+  MOV DI, 219
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 182
+  CALL    SOUND
+  MOV DI, 182
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND 
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 260
+  CALL    SOUND 
+  MOV DI, 260
+  CALL    SOUND
+  MOV DI, 260
+  CALL    SOUND
+  MOV DI, 260
+  CALL    SOUND
+  ;END OF TENTH MEASURE  
+  
+  MOV DI, 243
+  CALL    SOUND 
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 121
+  CALL    SOUND
+  MOV DI, 121
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 121
+  CALL    SOUND
+  MOV DI, 121
+  CALL    SOUND 
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 260
+  CALL    SOUND 
+  MOV DI, 260
+  CALL    SOUND  
+  MOV DI, 260
+  CALL    SOUND 
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 219
+  CALL    SOUND 
+  ;END OF ELEVENTH MEASURE
+  
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 121
+  CALL    SOUND    
+  MOV DI, 121
+  CALL    SOUND
+  MOV DI, 121
+  CALL    SOUND
+  MOV DI, 121
+  CALL    SOUND
+  MOV DI, 121
+  CALL    SOUND
+  MOV DI, 121
+  CALL    SOUND
+  MOV DI, 121
+  CALL    SOUND
+  MOV DI, 121
+  CALL    SOUND
+  ;END OF 12TH MEASURE
+  
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 82
+  CALL    SOUND 
+  MOV DI, 82
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 82
   CALL    SOUND
   MOV DI, 82
   CALL    SOUND
   MOV DI, 164
   CALL    SOUND
   MOV DI, 164
-  CALL    SOUND 
+  CALL    SOUND
+  ;END OF 13TH MEASURE 
   
-  MOV DI, 146   ;c quarter
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 82
   CALL    SOUND 
+  MOV DI, 82
+  CALL    SOUND  
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  ;END 14th MEASURE
+  
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 82
+  CALL    SOUND
+  MOV DI, 82
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 82
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND 
+  MOV DI, 188
+  CALL    SOUND 
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND
+  ;END OF 15TH MEASURE
+  
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND 
+  MOV DI, 188
+  CALL    SOUND 
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND  
+  ;END OF 16TH MEASURE
+  
+  MOV DI, 82
+  CALL    SOUND
+  MOV DI, 82
+  CALL    SOUND 
+  MOV DI, 82
+  CALL    SOUND
+  MOV DI, 82
+  CALL    SOUND
+  MOV DI, 82
+  CALL    SOUND 
+  MOV DI, 82
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 82
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND 
+  MOV DI, 188
+  CALL    SOUND 
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND 
+  MOV DI, 195
+  CALL    SOUND
+  ;END OF 17TH MEASURE
+  
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  ;END OF 18TH MEASURE 
+  
+  MOV DI, 82
+  CALL    SOUND
+  MOV DI, 82
+  CALL    SOUND 
+  MOV DI, 82
+  CALL    SOUND
+  MOV DI, 82
+  CALL    SOUND
+  MOV DI, 82
+  CALL    SOUND 
+  MOV DI, 82
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 82
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND
+  ;END OF 19TH MEASURE
+  
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 121
+  CALL    SOUND
+  MOV DI, 121
+  CALL    SOUND 
+  MOV DI, 121
+  CALL    SOUND
+  MOV DI, 121
+  CALL    SOUND
+  MOV DI, 121
+  CALL    SOUND
+  MOV DI, 121
+  CALL    SOUND
+  MOV DI, 121
+  CALL    SOUND
+  MOV DI, 121
+  CALL    SOUND
+  ;END OF 20TH MEASURE
+  
+  MOV DI, 82
+  CALL    SOUND 
+  MOV DI, 82
+  CALL    SOUND
+  MOV DI, 82
+  CALL    SOUND
+  MOV DI, 82
+  CALL    SOUND
+  MOV DI, 82
+  CALL    SOUND
+  MOV DI, 82
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND 
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
   MOV DI, 73
-  CALL    SOUND   
+  CALL    SOUND
+  ;END OF 21ST MEASURE
+  
   MOV DI, 146
   CALL    SOUND
-  MOV DI, 146  
-  CALL    SOUND 
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  ;END OF 22ND MEASURE  
   
-  MOV DI, 122   ;a quarter
+  MOV DI, 65
+  CALL    SOUND
+  MOV DI, 65
+  CALL    SOUND
+  MOV DI, 65
+  CALL    SOUND
+  MOV DI, 65
+  CALL    SOUND
+  MOV DI, 65
+  CALL    SOUND
+  MOV DI, 65
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 65
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND
+  ;END OF 23RD MEASURE
+  
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
   CALL    SOUND 
-  MOV DI, 122
+  ;END OF 24TH MEASURE
+  
+  MOV DI, 98
+  CALL    SOUND
+  MOV DI, 98
+  CALL    SOUND
+  MOV DI, 98
+  CALL    SOUND
+  MOV DI, 98
+  CALL    SOUND
+  MOV DI, 98
+  CALL    SOUND
+  MOV DI, 98
+  CALL    SOUND 
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 98
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND 
+  MOV DI, 219
+  CALL    SOUND
+  MOV DI, 219
+  CALL    SOUND
+  MOV DI, 219
+  CALL    SOUND
+  MOV DI, 219
+  CALL    SOUND
+  ;END OF 25TH MEASURE
+  
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  ;END OF 26TH MEASURE
+  
+  MOV DI, 98
+  CALL    SOUND
+  MOV DI, 98
+  CALL    SOUND
+  MOV DI, 98
+  CALL    SOUND
+  MOV DI, 98
+  CALL    SOUND
+  MOV DI, 98
+  CALL    SOUND
+  MOV DI, 98  ;creates effect of rearticulation
+  CALL    SOUND
+  MOV DI, 164 ;creates effect of rearticulation
+  CALL    SOUND
+  MOV DI, 98  ;creates effect of rearticulation, same note, drop octave, same note
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND
+  ;END OF 27TH MEASURE
+  
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 73
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND 
+  ;END OF 28TH MEASURE 
+  
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND 
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 73
+  CALL    SOUND
+  MOV DI, 73
+  CALL    SOUND
+  MOV DI, 73
+  CALL    SOUND
+  MOV DI, 73
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 73
+  CALL    SOUND
+  MOV DI, 73
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  ;END OF 29TH MEASURE
+  
+  MOV DI, 41
+  CALL    SOUND 
+  MOV DI, 41
+  CALL    SOUND 
+  MOV DI, 41
+  CALL    SOUND
+  MOV DI, 41
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 82
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND 
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND 
+  ;END OF 30TH MEASURE
+  
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 188
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 219
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  ;END OF 31ST MEASURE
+  
+  MOV DI, 65  
+  CALL    SOUND
+  MOV DI, 65
   CALL    SOUND   
-  MOV DI, 122
+  MOV DI, 65  
   CALL    SOUND
-  MOV DI, 122  
-  CALL    SOUND  
-  
-  MOV DI, 110   ;g quarter
+  MOV DI, 65
+  CALL    SOUND    
+  MOV DI, 65 
   CALL    SOUND 
-  MOV DI, 111
+  MOV DI, 65
   CALL    SOUND   
-  MOV DI, 112
+  MOV DI, 260
   CALL    SOUND
-  MOV DI, 113  
+  MOV DI, 243
+  CALL    SOUND    
+  MOV DI, 260
+  CALL    SOUND
+  MOV DI, 260    
   CALL    SOUND 
-  MOV DI, 114   ;g quarter
+  MOV DI, 243  
+  CALL    SOUND
+  MOV DI, 243   
   CALL    SOUND 
-  MOV DI, 115
-  CALL    SOUND   
-  MOV DI, 116
-  CALL    SOUND
-  MOV DI, 117  
-  CALL    SOUND     
-  
-  MOV DI, 146   ;c quarter NEW MEASURE
-  CALL    SOUND
-  MOV DI, 73   
-  CALL    SOUND
-  MOV DI, 146  
-  CALL    SOUND
-  MOV DI, 146   
-  
-  CALL    SOUND
-  MOV DI, 219   ;g 8th
+  MOV DI, 219  
   CALL    SOUND
   MOV DI, 219  
-  
+  CALL    SOUND    
+  MOV DI, 219   
   CALL    SOUND
-  MOV DI, 182   ;e 8th
-  CALL    SOUND
-  MOV DI, 91   
-  
-  CALL    SOUND
-  MOV DI, 182   ;e 8th
-  CALL    SOUND
-  MOV DI, 182     
-  
-  CALL    SOUND
-  MOV DI, 164   ;d 8th
-  CALL    SOUND
-  MOV DI, 82    
-  
-  CALL    SOUND
-  MOV DI, 164   ;d 8th
-  CALL    SOUND
-  MOV DI, 164 
-  
-  
-  CALL    SOUND  
-  MOV DI, 146   ;c 8th
+  MOV DI, 219
   CALL    SOUND 
-  MOV DI, 73   
+  ;END OF 32ND MEASURE
   
-  CALL    SOUND ;c 8th
+  MOV DI, 65  
+  CALL    SOUND
+  MOV DI, 65
+  CALL    SOUND   
+  MOV DI, 65   
+  CALL    SOUND
+  MOV DI, 65
+  CALL    SOUND    
+  MOV DI, 65  
+  CALL    SOUND 
+  MOV DI, 65
+  CALL    SOUND   
+  MOV DI, 260
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND    
+  MOV DI, 260
+  CALL    SOUND
+  MOV DI, 260     
+  CALL    SOUND 
+  MOV DI, 260   
+  CALL    SOUND
+  MOV DI, 260   
+  CALL    SOUND 
+  MOV DI, 164   
+  CALL    SOUND
+  MOV DI, 164  
+  CALL    SOUND    
+  MOV DI, 164   
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND 
+  ;END OF 33RD MEASURE
+  
   MOV DI, 146
   CALL    SOUND
-  MOV DI, 146  
-  
-  CALL    SOUND 
-  MOV DI, 195   ;f quarter
-  CALL    SOUND  
-  MOV DI, 193
+  MOV DI, 146
+  CALL    SOUND    
+  MOV DI, 146   
   CALL    SOUND
-  MOV DI, 191
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND   
+  MOV DI, 219   
   CALL    SOUND 
+  MOV DI, 195
+  CALL    SOUND   
+  MOV DI, 219
+  CALL    SOUND
+  MOV DI, 219  
+  CALL    SOUND   
+  MOV DI, 195   
+  CALL    SOUND 
+  MOV DI, 195 
+  CALL    SOUND   
   MOV DI, 189
+  CALL    SOUND
+  MOV DI, 189  
+  CALL    SOUND    
+  MOV DI, 219   
   CALL    SOUND 
+  MOV DI, 219
+  CALL    SOUND 
+  ;END OF 34TH MEASURE
   
+    
+  MOV DI, 195
   CALL    SOUND
-  MOV DI, 182   ;e 8th
+  MOV DI, 195  
+  CALL    SOUND 
+  MOV DI, 195  
+  CALL    SOUND 
+  MOV DI, 195
+  CALL    SOUND   
+  MOV DI, 195
   CALL    SOUND
-  MOV DI, 91   
-  
+  MOV DI, 195  
+  CALL    SOUND       
+  MOV DI, 243   
   CALL    SOUND
-  MOV DI, 182   ;e 8th
+  MOV DI, 219   
   CALL    SOUND
-  MOV DI, 182 
-  
+  MOV DI, 243  
   CALL    SOUND
-  MOV DI, 164   ;d 8th
+  MOV DI, 243     
   CALL    SOUND
-  MOV DI, 82    
-  
+  MOV DI, 243   
   CALL    SOUND
-  MOV DI, 146   ;d 8th
+  MOV DI, 243    
   CALL    SOUND
-  MOV DI, 146   
-  
+  MOV DI, 164  
   CALL    SOUND
-  MOV DI, 219   ;g 8th
-  CALL    SOUND
-  MOV DI, 219  
-  
-  CALL    SOUND
-  MOV DI, 109   ;g 8th
-  CALL    SOUND
-  MOV DI, 109   
-  
-  CALL    SOUND
-  MOV DI, 182   ;e 8th
-  CALL    SOUND
-  MOV DI, 91      
-  CALL    SOUND
-  MOV DI, 182   ;e 8th
-  CALL    SOUND
-  MOV DI, 182 
-                   
-  CALL    SOUND
-  MOV DI, 164   ;d 8th
+  MOV DI, 164     
   CALL    SOUND
   MOV DI, 164   
-  
   CALL    SOUND
-  MOV DI, 82   ;d 8th
+  MOV DI, 164   
   CALL    SOUND
-  MOV DI, 164    
-  CALL    SOUND
-  MOV DI, 82   ;d 8th
+  ;END OF 35TH MEASURE     
+    
+  MOV DI, 82   
   CALL    SOUND
   MOV DI, 82   
+  CALL    SOUND
+  MOV DI, 82   
+  CALL    SOUND
+  MOV DI, 82   
+  CALL    SOUND  
+  MOV DI, 82   
+  CALL    SOUND 
+  MOV DI, 82   
+  CALL    SOUND 
+  MOV DI, 260
+  CALL    SOUND
+  MOV DI, 243  
+  CALL    SOUND 
+  MOV DI, 260   
+  CALL    SOUND  
+  MOV DI, 260
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND 
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 219   
+  CALL    SOUND
+  MOV DI, 219    
+  CALL    SOUND 
+  MOV DI, 219   
+  CALL    SOUND
+  MOV DI, 219
+  CALL    SOUND  
+  ;END OF 36TH MEASURE
+  
+  MOV DI, 65   
+  CALL    SOUND
+  MOV DI, 65
+  CALL    SOUND   
+  MOV DI, 65  
+  CALL    SOUND
+  MOV DI, 65
+  CALL    SOUND    
+  MOV DI, 65  
+  CALL    SOUND 
+  MOV DI, 65
+  CALL    SOUND   
+  MOV DI, 260
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND    
+  MOV DI, 260
+  CALL    SOUND
+  MOV DI, 260      
+  CALL    SOUND 
+  MOV DI, 260 
+  CALL    SOUND
+  MOV DI, 260   
+  CALL    SOUND 
+  MOV DI, 164  
+  CALL    SOUND
+  MOV DI, 164  
+  CALL    SOUND    
+  MOV DI, 164   
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND    
+  ;END OF 37TH MEASURE
+    
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND    
+  MOV DI, 146   
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND
+  MOV DI, 146
+  CALL    SOUND   
+  MOV DI, 219   
+  CALL    SOUND 
+  MOV DI, 195
+  CALL    SOUND   
+  MOV DI, 219
+  CALL    SOUND
+  MOV DI, 219  
+  CALL    SOUND   
+  MOV DI, 195   
+  CALL    SOUND 
+  MOV DI, 195 
+  CALL    SOUND   
+  MOV DI, 189
+  CALL    SOUND
+  MOV DI, 189  
+  CALL    SOUND    
+  MOV DI, 219   
+  CALL    SOUND 
+  MOV DI, 219
+  CALL    SOUND 
+  ;END OF 38TH MEASURE  
+  
+  MOV DI, 195
+  CALL    SOUND  
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 189 
+  CALL    SOUND
+  MOV DI, 195   
+  CALL    SOUND
+  MOV DI, 219    
+  CALL    SOUND
+  MOV DI, 219   
+  CALL    SOUND
+  MOV DI, 219   
   
   CALL    SOUND  
-  MOV DI, 146   ;c 8th
+  MOV DI, 219  
   CALL    SOUND 
-  MOV DI, 73   
+  MOV DI, 219   
   CALL    SOUND  
-  MOV DI, 146   ;c 8th
+  MOV DI, 219   
   CALL    SOUND 
-  MOV DI, 146     
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 219
+  CALL    SOUND
+  ;END OF 39TH MEASURE
   
+  MOV DI, 243
   CALL    SOUND
-  MOV DI, 164   ;d 8th
+  MOV DI, 243
   CALL    SOUND
-  MOV DI, 163    
+  MOV DI, 219
   CALL    SOUND
-  MOV DI, 165   ;d 8th
+  MOV DI, 219
   CALL    SOUND
-  MOV DI, 162    
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 195
+  CALL    SOUND
+  MOV DI, 182
+  CALL    SOUND
+  MOV DI, 182
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND 
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 260
+  CALL    SOUND 
+  MOV DI, 260
+  CALL    SOUND
+  MOV DI, 260
+  CALL    SOUND
+  MOV DI, 260
+  CALL    SOUND
+  ;END OF 40TH MEASURE  
   
+  MOV DI, 243
+  CALL    SOUND 
+  MOV DI, 243
   CALL    SOUND
-  MOV DI, 121   ;a 8th
+  MOV DI, 243
   CALL    SOUND
-  MOV DI, 125    
+  MOV DI, 243
   CALL    SOUND
-  MOV DI, 129   ;a 8th
+  MOV DI, 121
   CALL    SOUND
-  MOV DI, 133    
+  MOV DI, 121
   CALL    SOUND
-  MOV DI, 137   ;a 8th
+  MOV DI, 121
   CALL    SOUND
-  MOV DI, 141    
+  MOV DI, 121
+  CALL    SOUND 
+  MOV DI, 243
   CALL    SOUND
-  MOV DI, 145   ;a 8th
+  MOV DI, 243
   CALL    SOUND
-
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 260
+  CALL    SOUND 
+  MOV DI, 260
+  CALL    SOUND  
+  MOV DI, 260
+  CALL    SOUND 
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 219
+  CALL    SOUND 
+  ;END OF 41ST MEASURE
+  
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 121
+  CALL    SOUND    
+  MOV DI, 121
+  CALL    SOUND
+  MOV DI, 121
+  CALL    SOUND
+  MOV DI, 121
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  MOV DI, 243
+  CALL    SOUND
+  ;END OF 42ND MEASURE
+  
+  MOV DI, 328
+  CALL    SOUND
+  MOV DI, 328
+  CALL    SOUND
+  MOV DI, 328
+  CALL    SOUND
+  MOV DI, 328
+  CALL    SOUND
+  MOV DI, 82
+  CALL    SOUND
+  MOV DI, 82
+  CALL    SOUND
+  MOV DI, 82
+  CALL    SOUND
+  MOV DI, 82
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 328
+  CALL    SOUND
+  MOV DI, 328
+  CALL    SOUND
+  MOV DI, 328
+  CALL    SOUND
+  MOV DI, 292
+  CALL    SOUND
+  MOV DI, 292
+  CALL    SOUND
+  MOV DI, 328
+  CALL    SOUND
+  MOV DI, 328
+  CALL    SOUND
+  MOV DI, 328
+  CALL    SOUND
+  MOV DI, 328
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 164
+  CALL    SOUND
+  MOV DI, 82
+  CALL    SOUND
+  MOV DI, 82
+  CALL    SOUND
+  MOV DI, 82
+  CALL    SOUND
+  MOV DI, 41
+  CALL    SOUND
+  MOV DI, 41
+  CALL    SOUND
+  MOV DI, 41
+  CALL    SOUND 
+  MOV DI, 41
+  CALL    SOUND
+  MOV DI, 41
+  CALL SOUND
+  ;END OF 43RD MEASURE  (PLAY AT 3993 CYCLES = 1:30)    
+  
   JMP KEYBOARDPIANO
 
 MAIN    ENDP
 END MAIN     
 
-; c = 146 fundamental
-; d = 164 major second 9/8 ratio
-; e = 182 major third 5/4 ratio
+; bblow = 65
+; c = 146 fundamental     73 bass
+; d = 164 major second 9/8 ratio  
+; eb= 175 minor third 6/5 ratio 
+; e = 182 major third 5/4 ratio 
+; enat = 188 e natural
 ; f = 195 perfect fourth 4/3 ratio
 ; g = 219 perfect fifth 3/2 ratio
 ; a = 243 major sixth 5/3 ratio 
+; bb= 260 minor seventh 16/9 ratio
 ; b = 274 major seventh 15/8 ratio
 ; c2nd octave = 292 - 2/1 ratio
 
@@ -425,5 +1643,5 @@ END MAIN
 ;http://spot.pcc.edu/~wlara/asmx86/asmx86_manual_9.pdf
 ;https://codereview.stackexchange.com/questions/87322/a-virtual-piano   
 ;http://spot.pcc.edu/~wlara/asmx86/asmx86_lab_10.pdf
-;https://en.wikipedia.org/wiki/IBM_Personal_Computer (peripheral integrated circuits, programmable interval timer)
-
+;https://en.wikipedia.org/wiki/IBM_Personal_Computer (peripheral integrated circuits, programmable interval timer) 
+;https://musescore.com/user/928016/scores/649531    <--Music Source
