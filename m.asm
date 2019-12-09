@@ -131,7 +131,7 @@ EXIT:   MOV AH, 00H
   MOV AL, 03H
   INT 10H
   MOV AX, 4C00H
-  INT 21H
+  INT 21H ;actually do it
   RET
    
 FINALCOUNTDOWN:  
